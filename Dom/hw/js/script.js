@@ -1,3 +1,4 @@
+
 function addProduct({name, imgUrl, id, display, storage, faceId, touchId, price, orderInfo:{reviews}, orderInfo:{inStock}}){
   let a = document.createElement('div');
   let b = document.createElement('button');
@@ -51,7 +52,6 @@ function addProduct({name, imgUrl, id, display, storage, faceId, touchId, price,
     }
   }
 
-  let count
   a.classList = 'col-4 card product';
   a.innerHTML = `
   <h3 class="card-title">${name}</h3>
@@ -80,12 +80,12 @@ function addProduct({name, imgUrl, id, display, storage, faceId, touchId, price,
         </div>
   </div>
   <span class="card-text">Цена: ${price}$</span>
-  <span class="card-text">К-ство на складе: ${inStock}</span>`
+  <span class="card-text in-stock">К-ство на складе: ${inStock}</span>`
 
   a.append(b)
 
   let basket = document.querySelector('.basket');
-  let currentCount = 1;
+  
   basket.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket" viewBox="0 0 16 16">
   <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1v4.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 13.5V9a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1.217L5.07 1.243a.5.5 0 0 1 .686-.172zM2 9v4.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9H2zM1 7v1h14V7H1zm3 3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 4 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 6 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 8 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5z"/>
 </svg> Корзина: ${currentCount}`;
@@ -93,9 +93,10 @@ function addProduct({name, imgUrl, id, display, storage, faceId, touchId, price,
   a.addEventListener('click', (e) => { inStock > 0 ? counter() : alert('Данный товар отсутствует на складе')});
 
   function makeCounter() {
-      
-    return function() { // (**)
-      return alert(currentCount++);
+    return function() {
+      return  basket.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket" viewBox="0 0 16 16">
+              <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1v4.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 13.5V9a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1.217L5.07 1.243a.5.5 0 0 1 .686-.172zM2 9v4.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9H2zM1 7v1h14V7H1zm3 3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 4 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 6 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 8 10zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5zm2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5z"/>
+              </svg> Корзина: ${currentCount.length++}`;
     };
   }
   
@@ -124,6 +125,45 @@ function addProduct({name, imgUrl, id, display, storage, faceId, touchId, price,
   document.querySelector('.products').appendChild(a)
 }
 
+function filter({price}) {
+  let a =  document.createElement('div');
+  a.classList = 'row center-block'; 
+  let b = document.createElement('button');
+  b.innerText = 'Выбрать';
+  b.classList = 'btn btn-primary mt-auto';
+
+  a.innerHTML = `
+    <label for="customRange2">Фильтр цены:</label>
+    <div class="col-md-6 p-2">
+      <input type="text" class="form-control firNum">
+    </div>
+    <div class="col-md-6 p-2">
+      <input type="text" class="form-control secNum">
+    </div>`;
+  
+  
+  
+  a.addEventListener('click', (e) => { value instanceof Number ? getProduct() : alert('Вы ввели некоректное число')});
+
+  function createNewListOfProducts(price) {
+    let mapProduct = price.map(function(x){
+      return console.log(x);
+    })
+  }
+
+  let getProduct = createNewListOfProducts();
+
+  
+  
+    a.append(b)
+
+  document.querySelector('.filter').appendChild(a)
+}
+
+let currentCount = [];
+
 for (i = 0; i < items.length; i++) {
   addProduct(items[i])
 }
+
+filter();
